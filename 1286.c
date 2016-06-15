@@ -1,35 +1,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int knapsack(int n, int p, int *t, int *pn)
-{
-	if(n < 0)
-		return 0;
-
-	if(p < pn[n])
-		return knapsack(n-1, p, t, pn);
-
-	if((knapsack(n-1, p-pn[n], t, pn)+t[n]) > knapsack(n-1, p, t, pn))
-		return knapsack(n-1, p-pn[n], t, pn)+t[n];
-
-	else
-		return knapsack(n-1, p, t, pn);
-}
-
 int main()
 {
 	int n, p;
-	int t[20], pn[20];
-	int i;
+	int i, j;
 
 	while(scanf("%d", &n) && n!= 0)
 	{
 		scanf("%d", &p);
 
-		for(i = 0; i < n; i++)
-			scanf("%d %d", &t[i], &pn[i]);
+		int *tempo, *peso, **tabela;
 
-		printf("%d min.\n", knapsack(n-1, p, t, pn));
+		tempo = (int*) calloc(n+1,sizeof(int));
+		peso = (int*) calloc(n+1,sizeof(int));
+
+		tabela = (int**) calloc(n+1,sizeof(int*));
+		for(i = 0; i <= n; i++)
+			tabela[i] = (int*) calloc(p+1,sizeof(int*));
+
+		for(i = 1; i <= n; i++)
+			scanf("%d %d", &tempo[i], &peso[i]);
+
+		for(i = 1; i <= n; i++)
+		{
+			for(j = 1; j <= p; j++)
+			{
+				if(peso[i] <= j)
+				{
+					tabela[i][j] = tempo[i] + tabela[i-1][j-peso[i]];
+
+					if(tabela[i-1][j] > tabela[i][j])
+						tabela[i][j] = tabela[i-1][j];
+				}
+
+				else
+					tabela[i][j] = tabela[i-1][j];
+			}
+		}
+
+		printf("%d min.\n", tabela[n][p]);
 	}
 	return 0;
 }
