@@ -1,4 +1,3 @@
-/*-- 24/mai/2003 --*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
